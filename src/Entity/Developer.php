@@ -1,7 +1,6 @@
 <?php
 
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -61,6 +60,38 @@ class Developer
     public function setIdentity(string $identity): void
     {
         $this->identity = $identity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStories()
+    {
+        return $this->stories;
+    }
+
+    /**
+     * @param mixed $stories
+     */
+    public function setStories($stories): void
+    {
+        $this->stories = $stories;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjects()
+    {
+        return $this->stories;
+    }
+
+    /**
+     * @param mixed $stories
+     */
+    public function setProjects($project): void
+    {
+        $this->project = $project;
     }
 
 
