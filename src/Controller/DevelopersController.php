@@ -37,7 +37,6 @@ class DevelopersController extends Controller
      */
     public function submit(Request $request,DeveloperRepository $developerRepository){
         $id=$request->get("id");
-
         if(isset($id)){
             $dev=$developerRepository->find($id);
             $dev->setIdentity($request->get("identity"));
