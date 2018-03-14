@@ -60,6 +60,19 @@ class DevelopersController extends Controller
     }
 
     /**
+     * @Route("developer/delete/{id}", name="developer_delete")
+     */
+    public function deleteAction($id, DevelopersGui $developersGui, DeveloperRepository $developerRepository)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $post = $developerRepository->findOneBy(["id"=>$id]);
+        $em->remove($post);
+        $em->flush();
+
+        return $developersGui->renderView('developers/index.html.twig');
+    }
+
+    /**
      * @Route("developer/new", name="developer_new")
      */
     public function new(DevelopersGui $developersGui){
