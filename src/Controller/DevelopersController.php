@@ -46,7 +46,7 @@ class DevelopersController extends Controller
         else{
             $dev = new Developer();
             $dev->setIdentity($request->get("identity"));
-            $dev->setId($developerRepository->count(array("id"=>">=0"))+1);
+            $dev->setId($developerRepository->count(array("id"=>">=0")));
             $developerRepository->update($dev);
         }
         return $this->forward("App\Controller\DevelopersController::refresh");

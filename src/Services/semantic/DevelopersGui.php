@@ -18,6 +18,7 @@ class DevelopersGui extends JquerySemantic
     public function dataTable($developers){
         $dt=$this->_semantic->dataTable("dtDev", "App\Entity\Developer", $developers);
         $dt->setFields(["developer"]);
+        $dt->setIdentifierFunction("getId");
         $dt->setCaptions(["Developer"]);
         $dt->setValueFunction("developer", function($v,$developer){
             $lbl=new HtmlLabel("",$developer->getIdentity());
