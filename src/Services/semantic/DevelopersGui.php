@@ -27,6 +27,9 @@ class DevelopersGui extends JquerySemantic
         $dt->addEditButton();
         $dt->setUrls(["edit"=>"developer/update"]);
         $dt->setTargetSelector("#update-dev");
+        $dt->addDeleteButton();
+        $dt->setUrls(["delete"=>"developer/delete"]);
+        $dt->setTargetSelector("#delete-dv");
         return $dt;
     }
     public function frm(Developer $developer){
