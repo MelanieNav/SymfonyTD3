@@ -9,6 +9,7 @@ use App\Repository\ProjectRepository;
 use App\Services\semantic\DevelopersGui;
 use App\Services\semantic\ProjectsGui;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -20,19 +21,35 @@ class DevelopersController extends Controller
      */
     public function index(DevelopersGui $gui,DeveloperRepository $developerRepository){
         $devs=$developerRepository->findAll();
+        $bt=$gui->buttonNewDeveloper();
         $dt=$gui->dataTable($devs);
         return $gui->renderView("developers/all.html.twig");
+    }
+    /**
+     * @Route("/developers/refresh", name="developers_refresh")
+     */
+    public function refresh(DevelopersGui $gui,DeveloperRepository $developerRepository){
+        $devs=$developerRepository->findAll();
+        return new Response($gui->dataTable($devs));
     }
     /**
      * @Route("developer/submit", name="developers_submit")
      */
     public function submit(Request $request,DeveloperRepository $developerRepository){
-        $dev=$developerRepository->find($request->get("id"));
-        if(isset($dev)){
+        $id=$request->get("id");
+
+        if(isset($id)){
+            $dev=$developerRepository->find($id);
             $dev->setIdentity($request->get("identity"));
             $developerRepository->update($dev);
         }
-        return $this->forward("App\Controller\DevelopersController::index");
+        else{
+            $dev = new Developer();
+            $dev->setIdentity($request->get("identity"));
+            $dev->setId($developerRepository->count(array("id"=>">=0"))+1);
+            $developerRepository->update($dev);
+        }
+        return $this->forward("App\Controller\DevelopersController::refresh");
     }
 
     /**
@@ -41,5 +58,13 @@ class DevelopersController extends Controller
     public function update(Developer $dev,DevelopersGui $developersGui){
         $developersGui->frm($dev);
         return $developersGui->renderView('developers/index.html.twig');
+    }
+
+    /**
+     * @Route("developer/new", name="developer_new")
+     */
+    public function new(DevelopersGui $developersGui){
+        $developersGui->frmAddDev();
+        return $developersGui->renderView('developers/new.html.twig');
     }
 }

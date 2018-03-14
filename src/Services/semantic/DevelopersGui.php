@@ -42,4 +42,27 @@ class DevelopersGui extends JquerySemantic
         $frm->addSeparatorAfter("identity");
         return $frm;
     }
+
+    public function buttonNewDeveloper(){
+        $bt=$this->_semantic->htmlButton("bt1","Ajouter un développeur");
+        $bt->getOnClick($this->getUrl("/developer/new"),"#ajout",["attr"=>""]);
+        echo $bt;
+    }
+
+    public function frmAddDev()
+    {
+        $dev = new Developer(); // Créer un objet développeur
+        $frm=$this->_semantic->dataForm("frm-new-dev",$dev); // Créer la base du formulaire en lui disant qu'on va modifier le développeur
+        $frm->setFields(["identity","submit","cancel"]); // Créer les différents champs
+        $frm->setCaptions(["Identity","Valider","Annuler"]); // Donne un label à ces champs
+        $frm->fieldAsInput("identity",["rules"=>["empty","maxLength[30]"]]); // On dit que le champs identity est un type="text" et qu'il y a des règles
+        $frm->setValidationParams(["on"=>"blur","inline"=>true]); // Pas compris
+        $frm->onSuccess("$('#frm-new-dev').hide();"); // Quand c'est réussi, on cache le formulaire
+        $frm->fieldAsSubmit("submit","positive","developer/submit", "#dtNewDev",["ajax"=>["attr"=>""]]);
+        // On dit que le champ submit est le validateur, qu'il a un aspect positif et qu'il déclanche la route submit dans le #dtNewDev
+        $frm->fieldAsLink("cancel",["class"=>"ui button cancel"]); // On dit que le champs cancel est un button
+        $this->click(".cancel","$('#frm-new-dev').hide();"); // Si on annule, on cache le formulaire
+        $frm->addSeparatorAfter("identity"); // Retour à la ligne, c'est plus du design ça
+        return $frm;
+    }
 }
