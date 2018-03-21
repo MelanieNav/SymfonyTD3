@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;

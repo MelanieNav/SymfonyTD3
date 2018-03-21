@@ -32,7 +32,7 @@ class Tag
      * @var string
      * @ORM\Column(name="color", type="string", length=10)
      */
-    private $color;
+    private $color = "";
 	/**
 	 * @return number
 	 */
@@ -75,6 +75,8 @@ class Tag
 		$this->color = $color;
 	}
 
-
+    public function __toString(){
+        return $this->getTitle();
+    }
 
 }
