@@ -1,13 +1,9 @@
 <?php
 
-
-
 namespace App\Entity;
 
-use Developer;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Project;
 
 /**
  * Story
@@ -55,7 +51,7 @@ class Story
     private $step;
 
     /**
-     * @var Developer
+     * @var \App\Entity\Developer
      *
      * @ORM\ManyToOne(targetEntity="Developer")
      * @ORM\JoinColumns({
@@ -65,7 +61,7 @@ class Story
     private $developer;
 
     /**
-     * @var Project
+     * @var \App\Entity\Project
      *
      * @ORM\ManyToOne(targetEntity="Project")
      * @ORM\JoinColumns({
@@ -74,117 +70,109 @@ class Story
      */
     private $project;
 
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
+    
+    public function __construct(){
+    	$this->tags=new ArrayCollection();
     }
-
     /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
+	 * @return number
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * @param number $id
+	 */
+	public function setId($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->code;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescriptif() {
+		return $this->descriptif;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTags() {
+		return $this->tags;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getStep() {
+		return $this->step;
+	}
+
+	/**
+	 * @return \App\Entity\Developer
+	 */
+	public function getDeveloper() {
+		return $this->developer;
+	}
+
+	/**
+	 * @return \App\Entity\Project
+	 */
+	public function getProject() {
+		return $this->project;
+	}
+
+	/**
+	 * @param string $code
+	 */
+	public function setCode($code) {
+		$this->code = $code;
+	}
+
+	/**
+	 * @param Ambigous <string, NULL> $descriptif
+	 */
+	public function setDescriptif($descriptif) {
+		$this->descriptif = $descriptif;
+	}
+
+	/**
+	 * @param Ambigous <string, NULL> $tags
+	 */
+	public function setTags($tags) {
+		$this->tags = $tags;
+	}
+
+	/**
+	 * @param Ambigous <string, NULL> $step
+	 */
+	public function setStep($step) {
+		$this->step = $step;
+	}
+
+	/**
+	 * @param \App\Entity\Developer $developer
+	 */
+	public function setDeveloper($developer) {
+		$this->developer = $developer;
+	}
+
+	/**
+	 * @param \App\Entity\Project $project
+	 */
+	public function setProject($project) {
+		$this->project = $project;
+	}
+
+	public function __toString(){
+    	return $this->descriptif;
     }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescriptif(): ?string
-    {
-        return $this->descriptif;
-    }
-
-    /**
-     * @param null|string $descriptif
-     */
-    public function setDescriptif(?string $descriptif): void
-    {
-        $this->descriptif = $descriptif;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getTags(): ?string
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param null|string $tags
-     */
-    public function setTags(?string $tags): void
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getStep(): ?string
-    {
-        return $this->step;
-    }
-
-    /**
-     * @param null|string $step
-     */
-    public function setStep(?string $step): void
-    {
-        $this->step = $step;
-    }
-
-    /**
-     * @return Developer
-     */
-    public function getDeveloper(): Developer
-    {
-        return $this->developer;
-    }
-
-    /**
-     * @param Developer $developer
-     */
-    public function setDeveloper(Developer $developer): void
-    {
-        $this->developer = $developer;
-    }
-
-    /**
-     * @return Project
-     */
-    public function getProject(): Project
-    {
-        return $this->project;
-    }
-
-    /**
-     * @param Project $project
-     */
-    public function setProject(Project $project): void
-    {
-        $this->project = $project;
-    }
-
-
 }

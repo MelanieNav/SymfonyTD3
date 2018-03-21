@@ -1,11 +1,8 @@
 <?php
 
-
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Tag
@@ -33,58 +30,51 @@ class Tag
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="color", type="string", length=10, nullable=false)
+     * @ORM\Column(name="color", type="string", length=10)
      */
     private $color;
+	/**
+	 * @return number
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
+	/**
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
+	/**
+	 * @return string
+	 */
+	public function getColor() {
+		return $this->color;
+	}
 
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
+	/**
+	 * @param number $id
+	 */
+	public function setId($id) {
+		$this->id = $id;
+	}
 
-    /**
-     * @param string $title
-     */
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title) {
+		$this->title = $title;
+	}
 
-    /**
-     * @return string
-     */
-    public function getColor(): string
-    {
-        return $this->color;
-    }
+	/**
+	 * @param string $color
+	 */
+	public function setColor($color) {
+		$this->color = $color;
+	}
 
-    /**
-     * @param string $color
-     */
-    public function setColor(string $color): void
-    {
-        $this->color = $color;
-    }
 
 
 }

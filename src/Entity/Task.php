@@ -1,11 +1,8 @@
 <?php
 
-
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Task
@@ -32,7 +29,7 @@ class Task
     private $content;
 
     /**
-     * @var \Story
+     * @var \App\Entity\Story
      *
      * @ORM\ManyToOne(targetEntity="Story")
      * @ORM\JoinColumns({
@@ -40,54 +37,34 @@ class Task
      * })
      */
     private $story;
+	/**
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
+	}
 
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
+	/**
+	 * @return \App\Entity\Story
+	 */
+	public function getStory() {
+		return $this->story;
+	}
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
+	/**
+	 * @param \App\Entity\Story $story
+	 */
+	public function setStory($story) {
+		$this->story = $story;
+	}
 
-    /**
-     * @return string
-     */
-    public function getContent(): string
-    {
-        return $this->content;
-    }
+	/**
+	 * @param string $content
+	 */
+	public function setContent($content) {
+		$this->content = $content;
+	}
 
-    /**
-     * @param string $content
-     */
-    public function setContent(string $content): void
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * @return \Story
-     */
-    public function getStory(): \Story
-    {
-        return $this->story;
-    }
-
-    /**
-     * @param \Story $story
-     */
-    public function setStory(\Story $story): void
-    {
-        $this->story = $story;
-    }
 
 
 }

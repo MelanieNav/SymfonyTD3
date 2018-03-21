@@ -1,65 +1,109 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\Project;
-use App\Repository\ProjectRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Services\semantic\ProjectsGui;
+use App\Repository\ProjectRepository;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\DeveloperRepository;
+use App\Repository\TagRepository;
 
-class ProjectsController extends Controller
-{
+class ProjectsController extends CrudController{
+
+	public function __construct(ProjectsGui $gui,ProjectRepository $projectRepo){
+		$this->gui=$gui;
+		$this->repository=$projectRepo;
+		$this->type="projects";
+		$this->subHeader="Project list";
+		$this->icon="table";
+	}
+	
+	/**
+	 * @Route("/projects", name="projects")
+	 */
+	public function index(){
+		return $this->_index();
+	}
+	
+	/**
+	 * @Route("/projects/refresh", name="projects_refresh")
+	 */
+	public function refresh(){
+		return $this->_refresh();
+	}
+	
+	/**
+	 * @Route("/projects/edit/{id}", name="projects_edit")
+	 */
+	public function edit($id,DeveloperRepository $devRepo){
+		$devs=$devRepo->getAll();
+		return $this->_edit($id,$devs);
+	}
+	
+	/**
+	 * @Route("/projects/new", name="projects_new")
+	 */
+	public function add(DeveloperRepository $devRepo){
+		$devs=$devRepo->getAll();
+		return $this->_add("\App\Entity\Project",$devs);
+	}
+	
+	/**
+	 * @Route("/projects/update", name="projects_update")
+	 */
+	public function update(Request $request){
+		return $this->_update($request, "\App\Entity\Project");
+	}
+	
+	/**
+	 * @Route("/projects/confirmDelete/{id}", name="projects_confirm_delete")
+	 */
+	public function deleteConfirm($id){
+		return $this->_deleteConfirm($id);
+	}
+	
+	/**
+	 * @Route("/projects/delete/{id}", name="projects_delete")
+	 */
+	public function delete($id,Request $request){
+		return $this->_delete($id, $request);
+	}
+	
     /**
-     * @Route("/index", name="index")
+     * @Route("/td3", name="td3_index")
      */
-    public function index(ProjectsGui $gui, ProjectRepository $projectRepository){
-        $gui->buttons();
-        return $gui->renderView('index.html.twig');
+    public function indexTd3(ProjectsGui $gui){
+    	$gui->buttons();
+        return $gui->renderView('projects/td3/index.html.twig');
     }
 
-    /**
-     * @Route("/projects", name="projects")
-     */
-    public function all(ProjectsGui $gui,ProjectRepository $projectRepository){
-        $projects=$projectRepository->findAll();
-        $gui->dataTable($projects);
-        return $gui->renderView('Projects/all.html.twig');
-    }
 
     /**
-     * @Route("project/submit", name="project_submit")
+     * @Route("/td3/projects", name="td3_projects")
      */
-    public function submit(Request $request,ProjectRepository $developerRepository){
-        $id=$request->get("id");
-        if(isset($id)){
-            $dev=$developerRepository->find($id);
-            $dev->setIdentity($request->get("name"));
-            $developerRepository->update($dev);
-        }
-        else{
-            $dev = new Project();
-            $dev->setName($request->get("name"));
-            $dev->setId($developerRepository->count(array("id"=>">=0")));
-            $developerRepository->update($dev);
-        }
-        return $this->forward("App\Controller\ProjectsController::refresh");
+    public function all(ProjectRepository $projectRepo){
+    	$projects=$projectRepo->findAll();
+    	return $this->render('projects/td3/all.html.twig',["projects"=>$projects]);
     }
-
-    /**
-     * @Route("project/update/{id}", name="project_update")
-     */
-    public function update(Project $dev,ProjectsGui $developersGui){
-        $developersGui->frm($dev);
-        return $developersGui->renderView('Projects/index.html.twig');
+    
+    protected function _setValues($instance, Request $request){
+    	parent::_setValues($instance, $request);
+    	$entityManager = $this->getDoctrine()->getManager();
+    	$devRepo=$entityManager->getRepository("\App\Entity\Developer");
+    	if($request->get("idOwner")!=null){
+	    	$dev=$devRepo->find($request->get("idOwner"));
+    		$instance->setOwner($dev);
+    	}
     }
-
+    
     /**
-     * @Route("project/new", name="project_new")
+     * @Route("/project/{idProject}", name="project_stories")
      */
-    public function new(ProjectsGui $developersGui){
-        $developersGui->frmAddDev();
-        return $developersGui->renderView('Projects/new.html.twig');
+    public function stories($idProject,TagRepository $tagRepo){
+    	$project=$this->repository->get($idProject);
+    	$this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
+    	$this->gui->listStories($project->getStories(),$tagRepo);
+    	return $this->gui->renderView("projects/stories.html.twig",["project"=>$project]);
     }
 }

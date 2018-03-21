@@ -2,81 +2,66 @@
 
 namespace App\Controller;
 
-use Ajax\php\symfony\JquerySemantic;
-use App\Entity\Developer;
-use App\Repository\DeveloperRepository;
-use App\Repository\ProjectRepository;
-use App\Services\semantic\DevelopersGui;
-use App\Services\semantic\ProjectsGui;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Services\semantic\DevelopersGui;
+use App\Repository\DeveloperRepository;
 
-class DevelopersController extends Controller
-{
-
+class DevelopersController extends CrudController{
+	
+	public function __construct(DevelopersGui $gui,DeveloperRepository $repo){
+		$this->gui=$gui;
+		$this->repository=$repo;
+		$this->type="developers";
+		$this->subHeader="Developer list";
+		$this->icon="users";
+	}
     /**
      * @Route("/developers", name="developers")
      */
-    public function index(DevelopersGui $gui,DeveloperRepository $developerRepository){
-        $devs=$developerRepository->findAll();
-        $bt=$gui->buttonNewDeveloper();
-        $dt=$gui->dataTable($devs);
-        return $gui->renderView("developers/all.html.twig");
+    public function index(){
+    	return $this->_index();
     }
+    
     /**
      * @Route("/developers/refresh", name="developers_refresh")
      */
-    public function refresh(DevelopersGui $gui,DeveloperRepository $developerRepository){
-        $devs=$developerRepository->findAll();
-        return new Response($gui->dataTable($devs));
+    public function refresh(){
+    	return $this->_refresh();
     }
+    
     /**
-     * @Route("developer/submit", name="developers_submit")
+     * @Route("/developers/edit/{id}", name="developers_edit")
      */
-    public function submit(Request $request,DeveloperRepository $developerRepository){
-        $id=$request->get("id");
-        if(isset($id)){
-            $dev=$developerRepository->find($id);
-            $dev->setIdentity($request->get("identity"));
-            $developerRepository->update($dev);
-        }
-        else{
-            $dev = new Developer();
-            $dev->setIdentity($request->get("identity"));
-            $dev->setId($developerRepository->count(array("id"=>">=0")));
-            $developerRepository->update($dev);
-        }
-        return $this->forward("App\Controller\DevelopersController::refresh");
+    public function edit($id){
+    	return $this->_edit($id);
+    }
+    
+    /**
+     * @Route("/developers/new", name="developers_new")
+     */
+    public function add(){
+    	return $this->_add("\App\Entity\Developer");
     }
 
     /**
-     * @Route("developer/update/{id}", name="developer_update")
+     * @Route("/developers/update", name="developers_update")
      */
-    public function update(Developer $dev,DevelopersGui $developersGui){
-        $developersGui->frm($dev);
-        return $developersGui->renderView('developers/index.html.twig');
+    public function update(Request $request){
+    	return $this->_update($request, "\App\Entity\Developer");
     }
-
+    
     /**
-     * @Route("developer/delete/{id}", name="developer_delete")
+     * @Route("/developers/confirmDelete/{id}", name="developers_confirm_delete")
      */
-    public function deleteAction($id, DevelopersGui $developersGui, DeveloperRepository $developerRepository)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $post = $developerRepository->findOneBy(["id"=>$id]);
-        $em->remove($post);
-        $em->flush();
-
-        return $developersGui->renderView('developers/index.html.twig');
+    public function deleteConfirm($id){
+    	return $this->_deleteConfirm($id);
     }
-
+    
     /**
-     * @Route("developer/new", name="developer_new")
+     * @Route("/developers/delete/{id}", name="developers_delete")
      */
-    public function new(DevelopersGui $developersGui){
-        $developersGui->frmAddDev();
-        return $developersGui->renderView('developers/new.html.twig');
+    public function delete($id,Request $request){
+    	return $this->_delete($id, $request);
     }
 }

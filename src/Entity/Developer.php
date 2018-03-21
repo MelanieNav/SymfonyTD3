@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Developer
@@ -31,68 +29,34 @@ class Developer
     private $identity;
 
     /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
+	 * @return string
+	 */
+	public function getIdentity() {
+		return $this->identity;
+	}
+
+	/**
+	 * @return number
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * @param number $id
+	 */
+	public function setId($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @param string $identity
+	 */
+	public function setIdentity($identity) {
+		$this->identity = $identity;
+	}
+
+	public function __toString(){
+    	return $this->identity;
     }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentity(): string
-    {
-        return $this->identity;
-    }
-
-    /**
-     * @param string $identity
-     */
-    public function setIdentity(string $identity): void
-    {
-        $this->identity = $identity;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStories()
-    {
-        return $this->stories;
-    }
-
-    /**
-     * @param mixed $stories
-     */
-    public function setStories($stories): void
-    {
-        $this->stories = $stories;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProjects()
-    {
-        return $this->stories;
-    }
-
-    /**
-     * @param mixed $stories
-     */
-    public function setProjects($project): void
-    {
-        $this->project = $project;
-    }
-
-
 }

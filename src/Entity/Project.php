@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -33,9 +32,9 @@ class Project
     /**
      * @var string
      *
-     * @ORM\Column(name="descriptif", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="description", type="text", length=65535, nullable=false)
      */
-    private $descriptif;
+    private $description;
 
     /**
      * @var \DateTime
@@ -52,7 +51,7 @@ class Project
     private $duedate;
 
     /**
-     * @var \Developer
+     * @var \App\Entity\Developer
      *
      * @ORM\ManyToOne(targetEntity="Developer")
      * @ORM\JoinColumns({
@@ -67,123 +66,113 @@ class Project
     private $stories;
 
     public function __construct(){
-        $this->stories=new ArrayCollection();
+    	$this->stories=new ArrayCollection();
+    	$this->idOwner="";
+    	$this->name="New project name";
     }
+	/**
+	 * @return number
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
+	/**
+	 * @return string
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
 
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
+	/**
+	 * @return \DateTime
+	 */
+	public function getStartdate() {
+		return $this->startdate;
+	}
 
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
+	/**
+	 * @return \DateTime
+	 */
+	public function getDuedate() {
+		return $this->duedate;
+	}
 
-    /**
-     * @return string
-     */
-    public function getDescriptif(): string
-    {
-        return $this->descriptif;
-    }
+	/**
+	 * @return Developer
+	 */
+	public function getOwner() {
+		return $this->owner;
+	}
 
-    /**
-     * @param string $descriptif
-     */
-    public function setDescriptif(string $descriptif): void
-    {
-        $this->descriptif = $descriptif;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getStories() {
+		return $this->stories;
+	}
 
-    /**
-     * @return \DateTime
-     */
-    public function getStartdate(): \DateTime
-    {
-        return $this->startdate;
-    }
+	/**
+	 * @param number $id
+	 */
+	public function setId($id) {
+		$this->id = $id;
+	}
 
-    /**
-     * @param \DateTime $startdate
-     */
-    public function setStartdate(\DateTime $startdate): void
-    {
-        $this->startdate = $startdate;
-    }
+	/**
+	 * @param string $name
+	 */
+	public function setName($name) {
+		$this->name = $name;
+	}
 
-    /**
-     * @return \DateTime
-     */
-    public function getDuedate(): \DateTime
-    {
-        return $this->duedate;
-    }
+	/**
+	 * @param string $description
+	 */
+	public function setDescription($description) {
+		$this->description = $description;
+	}
 
-    /**
-     * @param \DateTime $duedate
-     */
-    public function setDuedate(\DateTime $duedate): void
-    {
-        $this->duedate = $duedate;
-    }
+	/**
+	 * @param \DateTime $startdate
+	 */
+	public function setStartdate($startdate) {
+		if(is_string($startdate))
+			$startdate=\DateTime::createFromFormat("Y-m-d",$startdate);
+		$this->startdate = $startdate;
+	}
 
-    /**
-     * @return \Developer
-     */
-    public function getOwner(): \Developer
-    {
-        return $this->owner;
-    }
+	/**
+	 * @param \DateTime $duedate
+	 */
+	public function setDuedate($duedate) {
+		if(is_string($duedate))
+			$duedate=\DateTime::createFromFormat("Y-m-d",$duedate);
+		$this->duedate = $duedate;
+	}
 
-    /**
-     * @param \Developer $owner
-     */
-    public function setOwner(\Developer $owner): void
-    {
-        $this->owner = $owner;
-    }
+	/**
+	 * @param Developer $owner
+	 */
+	public function setOwner($owner) {
+		$this->owner = $owner;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function getStories()
-    {
-        return $this->stories;
-    }
-
-    /**
-     * @param mixed $stories
-     */
-    public function setStories($stories): void
-    {
-        $this->stories = $stories;
-    }
-
-
-
-
-
+	/**
+	 * @param mixed $stories
+	 */
+	public function setStories($stories) {
+		$this->stories = $stories;
+	}
+	
+	public function __toString(){
+		return $this->name;
+	}
 }
