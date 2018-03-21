@@ -1,71 +1,77 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Thomas
+ * Date: 21/03/2018
+ * Time: 15:30
+ */
 
 namespace App\Controller;
 
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use App\Repository\TagRepository;
-use App\Services\semantic\TagsGui;
-use App\Entity\Tag;
+use App\Repository\TaskRepository;
+use App\Services\semantic\TasksGui;
+use App\Entity\Task;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-class TagsController extends CrudController{
-
-    public function __construct(TagsGui $gui,TagRepository $repo){
+class TasksController extends CrudController
+{
+    public function __construct(TasksGui $gui,TaskRepository $repo){
         $this->gui=$gui;
         $this->repository=$repo;
-        $this->type="tags";
-        $this->subHeader="Tag list";
-        $this->icon="users";
+        $this->type="tasks";
+        $this->subHeader="Task list";
+        $this->icon="tasks";
     }
     /**
-     * @Route("/tags", name="tags")
+     * @Route("/tasks", name="tasks")
      */
     public function index(){
         return $this->_index();
     }
 
     /**
-     * @Route("/tags/refresh", name="tags_refresh")
+     * @Route("/tasks/refresh", name="tasks_refresh")
      */
     public function refresh(){
         return $this->_refresh();
     }
 
     /**
-     * @Route("/tags/edit/{id}", name="tags_edit")
+     * @Route("/tasks/edit/{id}", name="tasks_edit")
      */
     public function edit($id){
         return $this->_edit($id);
     }
 
     /**
-     * @Route("/tags/new", name="tags_new")
+     * @Route("/tasks/new", name="tasks_new")
      */
     public function add(){
-        return $this->_add("\App\Entity\Tag");
+        return $this->_add("\App\Entity\Task");
     }
 
     /**
-     * @Route("/tags/update", name="tags_update")
+     * @Route("/tasks/update", name="tasks_update")
      */
     public function update(Request $request){
-        return $this->_update($request, "\App\Entity\Tag");
+        return $this->_update($request, "\App\Entity\Task");
     }
 
     /**
-     * @Route("/tags/confirmDelete/{id}", name="tags_confirm_delete")
+     * @Route("/tasks/confirmDelete/{id}", name="tasks_confirm_delete")
      */
     public function deleteConfirm($id){
         return $this->_deleteConfirm($id);
     }
 
     /**
-     * @Route("/tags/delete/{id}", name="tags_delete")
+     * @Route("/tasks/delete/{id}", name="tasks_delete")
      */
     public function delete($id,Request $request){
         return $this->_delete($id, $request);
     }
-
 }

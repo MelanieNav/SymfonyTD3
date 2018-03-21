@@ -51,6 +51,13 @@ class Task
 		return $this->story;
 	}
 
+    /**
+     * @return number
+     */
+    public function getId() {
+        return $this->id;
+    }
+
 	/**
 	 * @param \App\Entity\Story $story
 	 */
@@ -65,6 +72,9 @@ class Task
 		$this->content = $content;
 	}
 
+    public function __toString(){
+        return $this->getContent();
+    }
 
 
 }
