@@ -17,7 +17,7 @@ class TagsController extends CrudController{
         $this->repository=$repo;
         $this->type="tags";
         $this->subHeader="Tag list";
-        $this->icon="users";
+        $this->icon="tag";
     }
     /**
      * @Route("/tags", name="tags")
@@ -50,15 +50,8 @@ class TagsController extends CrudController{
     /**
      * @Route("/tags/update", name="tags_update")
      */
-<<<<<<< HEAD
-    public function tags(TagsGui $gui,TagRepository $tagRepo){
-    	$tags=$tagRepo->findAll();
-    	$gui->dataTable($tags,'tags');
-    	return $gui->renderView('Tags/td3/index.html.twig');
-=======
     public function update(Request $request){
         return $this->_update($request, "\App\Entity\Tag");
->>>>>>> tag
     }
 
     /**

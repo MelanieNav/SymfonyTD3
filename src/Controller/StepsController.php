@@ -18,67 +18,60 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StepsController extends CrudController{
 
+    public function __construct(StepsGui $gui,StepRepository $repo){
+        $this->gui=$gui;
+        $this->repository=$repo;
+        $this->type="steps";
+        $this->subHeader="Step list";
+        $this->icon="step forward";
+    }
     /**
-     * @Route("steps", name="steps")
+     * @Route("/steps", name="steps")
      */
-    public function steps(StepsGui $gui,StepRepository $stepRepo){
-        $steps=$stepRepo->findAll();
-        $gui->dataTable($steps,'steps');
-        return $gui->renderView('Steps/index.html.twig');
+    public function index(){
+        return $this->_index();
     }
 
     /**
-     * @Route("step/update/{id}", name="step_update")
-     */
-    public function update(Step $step,StepsGui $stepsGui){
-        $stepsGui->frm($step);
-        return $stepsGui->renderView('Steps/frm.html.twig');
-    }
-
-    /**
-     * @Route("step/submit", name="step_submit")
-     */
-    public function submit(Request $request,StepRepository $stepRepo){
-        $step=$stepRepo->find($request->get("id"));
-        if(isset($step)){
-            $step->setTitle($request->get("title"));
-            $stepRepo->update($step);
-        }
-        return $this->redirectToRoute("steps");
-    }
-
-    /**
-     * @Route("step/delete/{id}", name="step_delete")
-     */
-    public function delete($id,Request $request){
-        return $this->_delete($id, $request);
-    }
-
-    /**
-     * @Route("step/confirmDelete/{id}", name="step_confirm_delete")
-     */
-    public function deleteConfirm($id){
-        return $this->_deleteConfirm($id);
-    }
-
-    /**
-     * @Route("step/new", name="step_new")
-     */
-    public function add(){
-        return $this->_add("\App\Entity\Step");
-    }
-
-    /**
-     * @Route("step/refresh", name="step_refresh")
+     * @Route("/steps/refresh", name="steps_refresh")
      */
     public function refresh(){
         return $this->_refresh();
     }
 
     /**
-     * @Route("step/edit/{id}", name="step_edit")
+     * @Route("/steps/edit/{id}", name="steps_edit")
      */
     public function edit($id){
         return $this->_edit($id);
     }
+
+    /**
+     * @Route("/steps/new", name="steps_new")
+     */
+    public function add(){
+        return $this->_add("\App\Entity\Step");
+    }
+
+    /**
+     * @Route("/steps/update", name="steps_update")
+     */
+    public function update(Request $request){
+        return $this->_update($request, "\App\Entity\Step");
+    }
+
+    /**
+     * @Route("/steps/confirmDelete/{id}", name="steps_confirm_delete")
+     */
+    public function deleteConfirm($id){
+        return $this->_deleteConfirm($id);
+    }
+
+    /**
+     * @Route("/steps/delete/{id}", name="steps_delete")
+     */
+    public function delete($id,Request $request){
+        return $this->_delete($id, $request);
+    }
+
 }

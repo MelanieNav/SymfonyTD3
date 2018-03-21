@@ -31,7 +31,7 @@ class Step
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -39,7 +39,7 @@ class Step
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -47,7 +47,7 @@ class Step
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle()
     {
         return $this->title;
     }
@@ -55,9 +55,13 @@ class Step
     /**
      * @param string $title
      */
-    public function setTitle(string $title): void
+    public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    public function __toString(){
+        return $this->getTitle();
     }
 
 
