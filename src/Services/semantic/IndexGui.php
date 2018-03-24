@@ -18,43 +18,46 @@ use Ajax\semantic\html\elements\HtmlImage;
 
 class IndexGui extends SemanticGui
 {
-    public function element($type,$display,$icone="tool"){
+    public function element($type,$display,$route,$icone="tool",$entityManager){
+        $Repo=$entityManager->getRepository("\App\Entity\\".$type);
+        $nb = count($Repo->findAll()); // Perfectible, si on pouvait juste faire une requete count() sur la base
+        
         $card=$this->_semantic->htmlCard("card-".$type);
         $card->addItemHeaderContent($type);
 
         $content=$card->addItemContent();
         $content->addIcon($icone)->setSize("big");
-        $content->addMeta("2 items","right"); // A update à partir de la base
+        $content->addMeta($nb." items","right"); // A update à partir de la base
 
         $content2=$card->addExtraContent();
         if($display){
             $button=$this->_semantic->htmlButton("bt-display-all-".$type,"See all");
             $button->setAnimated(new HtmlIcon("","eye"),"fade right");
-            //$button->getOn("click","/developers/new","#resp",array("data-ajax"=>"developers"));
+            $button->getOnClick($route,"#block-body",["attr"=>""]);
             $content2->addContent($button);
         }
         $button=$this->_semantic->htmlButton("bt-add-new-".$type,"Add new...");
         $button->setAnimated(new HtmlIcon("","plus"),"fade right");
-        $button->getOnClick("developers/new","#add"); // Direction à faire pour ajouter un element. On modifiera developers par la suite quand ça fonctionnera
+        $button->getOnClick($route."/new","#block-body",["attr"=>"","hasLoader"=>"false"]);
         $content2->addContent($button);
 
         return $card;
     }
 
-    public function board(){
+    public function board($entityManager){
         $grid=$this->_semantic->htmlGrid("grille",3,2);
         $cellDev = $grid->getCell(0,0);
-        $cellDev->setValue($this->element("Developer",true,"user"));
+        $cellDev->setValue($this->element("Developer",true,"developers","user",$entityManager));
         $cellProject = $grid->getCell(1,0);
-        $cellProject->setValue($this->element("Project",true, "calendar alternate outline"));
+        $cellProject->setValue($this->element("Project",true, "projects","calendar alternate outline",$entityManager));
         $cellStory = $grid->getCell(2,0);
-        $cellStory->setValue($this->element("Story",false,"id card outline icon"));
+        $cellStory->setValue($this->element("Story",false,"stories","id card outline icon",$entityManager));
         $cellTask = $grid->getCell(0,1);
-        $cellTask->setValue($this->element("Task",true,"tasks"));
+        $cellTask->setValue($this->element("Task",true,"tasks","tasks",$entityManager));
         $cellStep = $grid->getCell(1,1);
-        $cellStep->setValue($this->element("Step",true,"step forward icon"));
+        $cellStep->setValue($this->element("Step",true,"steps","step forward icon",$entityManager));
         $cellTag = $grid->getCell(2,1);
-        $cellTag->setValue($this->element("Tag",true,"tag"));
+        $cellTag->setValue($this->element("Tag",true,"tags","tag",$entityManager));
         return $grid;
     }
 }

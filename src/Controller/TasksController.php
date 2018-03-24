@@ -77,4 +77,14 @@ class TasksController extends CrudController
     public function delete($id,Request $request){
         return $this->_delete($id, $request);
     }
+
+    protected function _setValues($instance, Request $request){
+        parent::_setValues($instance, $request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $storyRepo=$entityManager->getRepository("\App\Entity\Story");
+        if($request->get("idStory")!=null){
+            $story=$storyRepo->find($request->get("idStory"));
+            $instance->setStory($story);
+        }
+    }
 }

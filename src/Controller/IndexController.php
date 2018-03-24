@@ -16,7 +16,8 @@ class IndexController extends AbstractController
     public function index(IndexGui $gui){
     	$gui->getOnClick(".elements","", "#block-body",["attr"=>"data-ajax"]);
     	$gui->getOnClick("#menu a[data-ajax]","","#block-body",["attr"=>"data-ajax"]);
-    	$gui->board();
+        $entityManager = $this->getDoctrine()->getManager();
+    	$gui->board($entityManager);
         return $gui->renderView("index.html.twig");
     }
 }
