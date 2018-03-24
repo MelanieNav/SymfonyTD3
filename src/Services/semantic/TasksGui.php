@@ -10,17 +10,24 @@ namespace App\Services\semantic;
 
 
 use Ajax\semantic\html\elements\HtmlLabel;
+use Ajax\service\JArray;
+use App\Entity\Story;
 
 class TasksGui extends SemanticGui
 {
     public function dataTable($tasks,$type){
         $dt=$this->_semantic->dataTable("dt-".$type, "App\Entity\Task", $tasks);
         $dt->setIdentifierFunction("getId");
-        $dt->setFields(["content"]);
-        $dt->setCaptions(["Content"]);
-        $dt->setValueFunction("task", function($v,$task){
+        $dt->setFields(["content","story"]);
+        $dt->setCaptions(["Content","Story"]);
+        $dt->setValueFunction("content", function($v,$task){
             $lbl=new HtmlLabel("",$task->getContent());
             return $lbl;
+        });
+        $dt->setValueFunction("story", function($story){
+            if(isset($story)){
+                return new HtmlLabel("",$story,"user");
+            }
         });
         $dt->addEditDeleteButtons(false, [ "ajaxTransition" => "random","hasLoader"=>false ], function ($bt) {
             $bt->addClass("circular");
@@ -32,18 +39,19 @@ class TasksGui extends SemanticGui
         return $dt;
     }
 
-    public function dataForm($tag,$type,$di=null){
-        $frm=$this->_semantic->dataForm("frm-".$type, $tag);
-        $frm->setFields(["id","content","submit","cancel"]);
-        $frm->setCaptions(["","Content","Valider","Annuler"]);
+    public function dataForm($task,$type,$di=null){
+        $frm=$this->_semantic->dataForm("frm-".$type, $task);
+        if($task->getStory()!=null){
+            $task->idStory=$task->getStory()->getId();
+        }
+        $frm->setFields(["id","content","idStory"]);
+        $frm->setCaptions(["","Content","Story"]);
         $frm->fieldAsHidden("id");
         $frm->fieldAsInput("content",["rules"=>["empty","maxLength[30]"]]);
+        $frm->fieldAsDropDown("idStory",JArray::modelArray($di,"getId","getDescriptif"));
         $frm->setValidationParams(["on"=>"blur","inline"=>true]);
-        $frm->onSuccess("$('#frm-tasks').hide();");
-        $frm->fieldAsSubmit("submit","positive","tasks/update", "#frm",["ajax"=>["attr"=>""]]);
-        $frm->fieldAsLink("cancel",["class"=>"ui button cancel"]);
-        $this->click(".cancel","$('#frm-tasks').hide();");
-        $frm->addSeparatorAfter("content");
+        $frm->setSubmitParams("tasks/update","#frm",["attr"=>"","hasLoader"=>false]);
+        $frm->addSeparatorAfter("idStory");
         return $frm;
     }
 }

@@ -76,5 +76,10 @@ class Task
         return $this->getContent();
     }
 
+    public function __construct(){
+        $this->idStory="";
+        $this->content="New task";
+    }
+
 
 }

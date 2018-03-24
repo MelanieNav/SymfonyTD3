@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 
+use App\Repository\StoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Repository\TaskRepository;
@@ -43,15 +44,17 @@ class TasksController extends CrudController
     /**
      * @Route("/tasks/edit/{id}", name="tasks_edit")
      */
-    public function edit($id){
-        return $this->_edit($id);
+    public function edit($id, StoryRepository $repository){
+        $stories=$repository->getAll();
+        return $this->_edit($id, $stories);
     }
 
     /**
      * @Route("/tasks/new", name="tasks_new")
      */
-    public function add(){
-        return $this->_add("\App\Entity\Task");
+    public function add(StoryRepository $repository){
+        $stories=$repository->getAll();
+        return $this->_add("\App\Entity\Task",$stories);
     }
 
     /**
