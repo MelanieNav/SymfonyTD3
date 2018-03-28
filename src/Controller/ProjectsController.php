@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\StepRepository;
+use App\Repository\StoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Services\semantic\ProjectsGui;
 use App\Repository\ProjectRepository;
@@ -103,7 +105,21 @@ class ProjectsController extends CrudController{
     public function stories($idProject,TagRepository $tagRepo){
     	$project=$this->repository->get($idProject);
     	$this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
+        $this->gui->getOnClick("#dashboard-bt", "project/{$idProject}/board","#board-div",["attr"=>""]);
     	$this->gui->listStories($project->getStories(),$tagRepo);
     	return $this->gui->renderView("projects/stories.html.twig",["project"=>$project]);
     }
+
+    /**
+     * @Route("/project/{idProject}/board", name="project_story_board")
+     */
+    public function board($idProject,TagRepository $tagRepo, StoryRepository $storyRepo, StepRepository $stepRepository){
+        $project=$this->repository->get($idProject);
+        $this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
+        $this->gui->listStories($project->getStories(),$tagRepo);
+        $dd=$this->gui->displaySteps($project,$stepRepository,$tagRepo);
+        return $this->gui->simpleElement($dd);
+    }
+
+
 }

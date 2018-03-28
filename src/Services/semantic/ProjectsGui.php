@@ -3,11 +3,15 @@
 namespace App\Services\semantic;
 
 
+use Ajax\semantic\html\collections\menus\HtmlMenu;
 use Ajax\semantic\html\elements\HtmlLabel;
 use Ajax\semantic\html\elements\HtmlInput;
+use Ajax\semantic\html\elements\HtmlSegment;
 use Ajax\service\JArray;
 use App\Entity\Story;
 use Ajax\semantic\html\content\HtmlListItem;
+use App\Repository\StepRepository;
+use App\Repository\StoryRepository;
 use App\Repository\TagRepository;
 use Ajax\semantic\html\elements\HtmlButton;
 
@@ -95,5 +99,41 @@ class ProjectsGui extends SemanticGui{
 		$list->addClass("middle aligned relaxed");
 		return $list;
 	}
+
+    protected function getStepsAndStories($project,StepRepository $stepRepo){
+        $steps=$stepRepo->findAll();
+        $stories=$project->getStories()->toArray();
+        foreach ($steps as $step){
+            $step->stories=array_filter($stories,function($story) use($step){
+                return ($story->getStep()==$step->getTitle());
+            });
+        }
+        return $steps;
+    }
+
+    public function displaySteps ($project, StepRepository $stepRepository, TagRepository $Tagrepository){
+	    $steps= $this->getStepsAndStories($project,$stepRepository);
+        $grid=$this->_semantic->htmlGrid("steps-grid");
+        foreach ($steps as $step){
+            $col=$grid->addCol();
+            $segTitle=new HtmlSegment("",'<i class="step forward icon"></i>&nbsp;'.$step->getTitle());
+            $segTitle->addClass("secondary");
+            $segContent=new HtmlSegment("step-".$step->getId());
+            $segContent->addClass("drop-zone");
+            $segContent->setProperty("data-ajax", $step->getTitle());
+            $segTitle->setAttachment($segContent,"top");
+            foreach ($step->stories as $story){
+                $segContent->addContent($this->displayStory($Tagrepository,$story));
+            }
+            $col->setContent([$segTitle,$segContent]);
+        }
+        return $grid;
+    }
+
+    public function displayStory(TagRepository $tagRepository, $story){
+        $card=$this->_semantic->htmlCard("card1");
+        $card->addItemHeaderContent("Salut","","La description");
+        return $card;
+    }
 }
 

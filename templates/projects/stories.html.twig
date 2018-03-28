@@ -10,10 +10,15 @@
 	<i class="ui plus icon"></i>
 	Add Story in project...
 </a>
+<a href="#" id="dashboard-bt" class="ui teal button" data-ajax="project/{{ project.id }}/board">
+    <i class="calendar alternate outline icon"></i>
+    Dashboard
+</a>
 <a href="{{ path('projects') }}" id="back-to-project-bt" class="ui button nav-stories" data-ajax="projects">
 	<i class="caret square left icon"></i>
 	Back to projects
 </a>
 <div class="ui divider"></div>
 {{ q["list-stories"] | raw }}
+<div id="board-div"></div>
 {{ script_foot | raw }}
