@@ -27,7 +27,7 @@ class IndexGui extends SemanticGui
 
         $content=$card->addItemContent();
         $content->addIcon($icone)->setSize("big");
-        $content->addMeta($nb." items","right"); // A update à partir de la base
+        $content->addMeta($nb." items","right");
 
         $content2=$card->addExtraContent();
         if($display){

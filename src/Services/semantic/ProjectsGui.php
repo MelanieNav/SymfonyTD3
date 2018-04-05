@@ -82,11 +82,13 @@ class ProjectsGui extends SemanticGui{
 		$list=$this->_semantic->htmlList("list-stories");
 		$list->fromDatabaseObjects($stories, function(Story $story) use($tagRepo){
 			$item=new HtmlListItem("list-story-".$story->getId(),["icon"=>"file big","header"=>$story->getCode(),"description"=>$story->getDescriptif()]);
+			$item->getOnClick("stories/editStory/".$story->getId(),"#frm",["attr"=>""]);
 			$tags=$tagRepo->getFromIds($story->getTags());
 			foreach ($tags as $tag){
 				$lbl=new HtmlLabel("",$tag->getTitle(),"tag","span");
 				$lbl->setColor($tag->getColor());
 				$item->addContent($lbl);
+				//$item->setProperties(["draggable"=>"true"]);
 			}
 			$dev="Not assigned";
 			if($story->getDeveloper()!=null){
@@ -100,7 +102,18 @@ class ProjectsGui extends SemanticGui{
 		return $list;
 	}
 
-    protected function getStepsAndStories($project,StepRepository $stepRepo){
+	public function add($project, $di=null){
+        $frm=$this->_semantic->dataForm("", $project);
+        $frm->setFields(["id","idStory"]);
+        $frm->setCaptions(["","Story"]);
+        $frm->fieldAsHidden("id");
+        $frm->fieldAsDropDown("idStory",JArray::modelArray($di,"getId","getDescriptif"));
+        $frm->setValidationParams(["on"=>"blur","inline"=>true]);
+        $frm->setSubmitParams("projects/update","#frm",["attr"=>"","hasLoader"=>false]);
+        return $frm;
+    }
+
+    public function getStepsAndStories($project,StepRepository $stepRepo){
         $steps=$stepRepo->findAll();
         $stories=$project->getStories()->toArray();
         foreach ($steps as $step){
@@ -132,8 +145,16 @@ class ProjectsGui extends SemanticGui{
 
     public function displayStory(TagRepository $tagRepository, $story){
         $card=$this->_semantic->htmlCard("card1");
-        $card->addItemHeaderContent("Salut","","La description");
+        $card->addItemHeaderContent($story->getDescriptif());
+        $content=$card->addItemContent();
+        $tags=$tagRepository->getFromIds($story->getTags());
+        foreach ($tags as $tag){
+            $lbl=new HtmlLabel("",$tag->getTitle(),"tag","span");
+            $lbl->setColor($tag->getColor());
+            $content->addContent($lbl);
+        }
         return $card;
     }
+
 }
 

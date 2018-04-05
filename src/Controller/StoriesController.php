@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\DeveloperRepository;
+use App\Repository\StepRepository;
 use App\Repository\StoryRepository;
 use App\Services\semantic\StoriesGui;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -76,5 +78,16 @@ class StoriesController extends CrudController
      */
     public function delete($id,Request $request){
         return $this->_delete($id, $request);
+    }
+
+    /**
+     * @Route("/stories/editStory/{id}", name="stories_editStory")
+     */
+    public function editStory($id, StepRepository $stepRepository, DeveloperRepository $developerRepository){
+        $stories=$stepRepository->getAll();
+        $devs=$developerRepository->getAll();
+        $story=$this->repository->get($id);
+        $dd = $this->gui->editStory($story,$stories,$devs);
+        return $this->gui->simpleElement($dd);
     }
 }

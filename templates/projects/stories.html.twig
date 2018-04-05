@@ -6,11 +6,11 @@
   </div>
 </h2>
 <h3 class="ui header">Stories</h3>
-<a href="#" id="add-story-bt" class="ui button nav-stories" data-ajax="project/addStory">
+<a id="add-story-bt" class="ui button" data-ajax="project/{{ project.id }}/addStory">
 	<i class="ui plus icon"></i>
 	Add Story in project...
 </a>
-<a href="#" id="dashboard-bt" class="ui teal button" data-ajax="project/{{ project.id }}/board">
+<a id="dashboard-bt" class="ui teal button" data-ajax="project/{{ project.id }}/board">
     <i class="calendar alternate outline icon"></i>
     Dashboard
 </a>
@@ -19,6 +19,11 @@
 	Back to projects
 </a>
 <div class="ui divider"></div>
+
 {{ q["list-stories"] | raw }}
-<div id="board-div"></div>
+<div id="board-div">
+
+</div>
+<div id="frm"></div>
+
 {{ script_foot | raw }}

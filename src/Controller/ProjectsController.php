@@ -106,8 +106,20 @@ class ProjectsController extends CrudController{
     	$project=$this->repository->get($idProject);
     	$this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
         $this->gui->getOnClick("#dashboard-bt", "project/{$idProject}/board","#board-div",["attr"=>""]);
+        $this->gui->getOnClick("#add-story-bt", "project/{$idProject}/addStory","#board-div",["attr"=>""]);
     	$this->gui->listStories($project->getStories(),$tagRepo);
     	return $this->gui->renderView("projects/stories.html.twig",["project"=>$project]);
+    }
+
+    /**
+     * @Route("/project/{idProject}/addStory", name="project_add_story")
+     */
+    public function addStory($idProject,TagRepository $tagRepo, StoryRepository $storyRepo){
+        $stories=$storyRepo->getAll();
+        $project=$this->repository->get($idProject);
+        $this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
+        $this->gui->listStories($project->getStories(),$tagRepo);
+        return $this->gui->simpleElement($this->gui->add($project,$stories));
     }
 
     /**
@@ -118,8 +130,10 @@ class ProjectsController extends CrudController{
         $this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
         $this->gui->listStories($project->getStories(),$tagRepo);
         $dd=$this->gui->displaySteps($project,$stepRepository,$tagRepo);
+        /*$steps = $this->gui->getStepsAndStories($project,$stepRepository);
+        echo "<pre>";
+        print_r($steps);
+        echo "</pre>";*/
         return $this->gui->simpleElement($dd);
     }
-
-
 }

@@ -8,6 +8,7 @@
 namespace App\Services\semantic;
 
 use Ajax\semantic\html\elements\HtmlLabel;
+use Ajax\service\JArray;
 use App\Entity\Story;
 
 class StoriesGui extends SemanticGui{
@@ -45,6 +46,18 @@ class StoriesGui extends SemanticGui{
         $frm->fieldAsSubmit("submit","positive","stories/update", "#frm",["ajax"=>["attr"=>""]]);
         $frm->fieldAsLink("cancel",["class"=>"ui button cancel"]);
         $this->click(".cancel","$('#frm-stories').hide();");
+        return $frm;
+    }
+
+    public function editStory($story, $steps, $dev){
+        $frm=$this->_semantic->dataForm("", $story);
+        $frm->setFields(["id","idStep", "idDev"]);
+        $frm->setCaptions(["","Story", "Developer"]);
+        $frm->fieldAsHidden("id");
+        $frm->fieldAsDropDown("idStep",JArray::modelArray($steps,"getId","getTitle"));
+        $frm->fieldAsDropDown("idDev",JArray::modelArray($dev,"getId","getIdentity"));
+        $frm->setValidationParams(["on"=>"blur","inline"=>true]);
+        $frm->setSubmitParams("projects/update","#frm",["attr"=>"","hasLoader"=>false]);
         return $frm;
     }
 }
