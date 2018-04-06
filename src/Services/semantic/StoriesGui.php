@@ -15,7 +15,7 @@ class StoriesGui extends SemanticGui{
     public function dataTable($stories,$type){
         $dt=$this->_semantic->dataTable("dt-".$type, "App\Entity\Story", $stories);
         $dt->setIdentifierFunction("getId");
-        $dt->setFields(["story","descritpif"]);
+        $dt->setFields(["story","descriptif"]);
         $dt->setCaptions(["Story","Descriptif"]);
         $dt->setValueFunction("story", function($v,$story){
             $lbl=new HtmlLabel("",$story->getCode());

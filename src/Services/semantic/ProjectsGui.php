@@ -82,7 +82,8 @@ class ProjectsGui extends SemanticGui{
 		$list=$this->_semantic->htmlList("list-stories");
 		$list->fromDatabaseObjects($stories, function(Story $story) use($tagRepo){
 			$item=new HtmlListItem("list-story-".$story->getId(),["icon"=>"file big","header"=>$story->getCode(),"description"=>$story->getDescriptif()]);
-			$item->getOnClick("stories/editStory/".$story->getId(),"#frm",["attr"=>""]);
+			$item->setClass("drag-item");
+			//$item->getOnClick("stories/editStory/".$story->getId(),"#frm",["attr"=>""]);
 			$tags=$tagRepo->getFromIds($story->getTags());
 			foreach ($tags as $tag){
 				$lbl=new HtmlLabel("",$tag->getTitle(),"tag","span");
@@ -103,13 +104,18 @@ class ProjectsGui extends SemanticGui{
 	}
 
 	public function add($project, $di=null){
-        $frm=$this->_semantic->dataForm("", $project);
-        $frm->setFields(["id","idStory"]);
-        $frm->setCaptions(["","Story"]);
+        $frm=$this->_semantic->dataForm("frm", $project);
+        $frm->setFields(["id","code","descriptif","valider","annuler"]);
+        $frm->setCaptions(["","Code","Descriptif","Valider","Annuler"]);
         $frm->fieldAsHidden("id");
-        $frm->fieldAsDropDown("idStory",JArray::modelArray($di,"getId","getDescriptif"));
+        $frm->fieldAsInput("code",["rules"=>"empty"]);
+        $frm->fieldAsInput("descriptif",["rules"=>"empty"]);
         $frm->setValidationParams(["on"=>"blur","inline"=>true]);
-        $frm->setSubmitParams("projects/update","#frm",["attr"=>"","hasLoader"=>false]);
+        $frm->onSuccess("$('#frm').hide();");
+        $frm->setSubmitParams("projects/update","#frm-submit",["ajax"=>["attr"=>""]]);
+        $frm->fieldAsSubmit("valider","positive","project/".$project->getId()."/submitAddStory", "#frm-submit",["ajax"=>["attr"=>""]]);
+        $frm->fieldAsLink("annuler",["class"=>"ui button red cancel"]);
+        $this->click(".cancel","$('#frm').hide();");
         return $frm;
     }
 

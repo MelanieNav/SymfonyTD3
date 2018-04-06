@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Project;
+use App\Entity\Story;
 use App\Repository\StepRepository;
 use App\Repository\StoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -114,13 +116,31 @@ class ProjectsController extends CrudController{
     /**
      * @Route("/project/{idProject}/addStory", name="project_add_story")
      */
-    public function addStory($idProject,TagRepository $tagRepo, StoryRepository $storyRepo){
+    public function frmAddStory($idProject,TagRepository $tagRepo, StoryRepository $storyRepo){
         $stories=$storyRepo->getAll();
         $project=$this->repository->get($idProject);
         $this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
         $this->gui->listStories($project->getStories(),$tagRepo);
         return $this->gui->simpleElement($this->gui->add($project,$stories));
     }
+
+    /**
+     * @Route("/project/{idProject}/submitAddStory", name="project_submitAddStory")
+     */
+    public function addStory($idProject,ProjectRepository $repository, TagRepository $tagRepo, StoryRepository $storyRepo, Request $request){
+        $project=$this->repository->get($idProject);
+        $story = new Story();
+        $story->setId($request->get("id"));
+        $story->setCode($request->get("code"));
+        $story->setDescriptif($request->get("descriptif"));
+        $story->setProject($project);
+        $storyRepo->update($story);
+        $project->setStories($story);
+        $repository->update($project);
+        $dd = $this->gui->listStories($project->getStories(),$tagRepo);
+        return $this->gui->simpleElement($dd);
+    }
+
 
     /**
      * @Route("/project/{idProject}/board", name="project_story_board")
@@ -130,6 +150,8 @@ class ProjectsController extends CrudController{
         $this->gui->getOnClick(".nav-stories", "","#block-body",["attr"=>"data-ajax"]);
         $this->gui->listStories($project->getStories(),$tagRepo);
         $dd=$this->gui->displaySteps($project,$stepRepository,$tagRepo);
+        $this->gui->setDraggable(".drag-item",["attr"=>"data-ajax"]);
+        $this->gui->asDropZone(".drop-zone");
         /*$steps = $this->gui->getStepsAndStories($project,$stepRepository);
         echo "<pre>";
         print_r($steps);
